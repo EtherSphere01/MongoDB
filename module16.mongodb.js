@@ -120,9 +120,32 @@
 //     },
 // ]);
 
+// db.test.aggregate([
+//     {
+//         $unwind: "$interests",
+//     },
+//     { $group: { _id: "$age", interestPerAge: { $push: "$interests" } } },
+// ]);
+
 db.test.aggregate([
     {
-        $unwind: "$interests",
+        $bucket: {
+            groupBy: "$age",
+            boundaries: [20, 40, 60, 80],
+            default: "80 er upore",
+            output: {
+                count: { $sum: 1 },
+                karakara: {
+                    $push: {
+                        name: "$name",
+                    },
+                },
+            },
+        },
     },
-    { $group: { _id: "$age", interestPerAge: { $push: "$interests" } } },
+
+    { $sort: { count: -1 } },
+    {
+        $limit: 5,
+    },
 ]);
