@@ -127,25 +127,59 @@
 //     { $group: { _id: "$age", interestPerAge: { $push: "$interests" } } },
 // ]);
 
+// db.test.aggregate([
+//     {
+//         $bucket: {
+//             groupBy: "$age",
+//             boundaries: [20, 40, 60, 80],
+//             default: "80 er upore",
+//             output: {
+//                 count: { $sum: 1 },
+//                 karakara: {
+//                     $push: {
+//                         name: "$name",
+//                     },
+//                 },
+//             },
+//         },
+//     },
+
+//     { $sort: { count: -1 } },
+//     {
+//         $limit: 5,
+//     },
+// ]);
+
 db.test.aggregate([
     {
-        $bucket: {
-            groupBy: "$age",
-            boundaries: [20, 40, 60, 80],
-            default: "80 er upore",
-            output: {
-                count: { $sum: 1 },
-                karakara: {
-                    $push: {
-                        name: "$name",
-                    },
+        $facet: {
+            //pipeline1:
+            friendsCount: [
+                {
+                    $unwind: "$friends",
                 },
-            },
+                {
+                    $group: { _id: "$friends", count: { $sum: 1 } },
+                },
+            ],
+            //pipeline2:
+            educationCount: [
+                {
+                    $unwind: "$education",
+                },
+                {
+                    $group: { _id: "$education", count: { $sum: 1 } },
+                },
+            ],
+            //pipeline3:
+            SkillsCount: [
+                {
+                    $unwind: "$skills",
+                },
+                {
+                    $group: { _id: "$skills", count: { $sum: 1 } },
+                },
+            ],
         },
-    },
-
-    { $sort: { count: -1 } },
-    {
-        $limit: 5,
     },
 ]);
