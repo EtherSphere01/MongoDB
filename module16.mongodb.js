@@ -150,36 +150,57 @@
 //     },
 // ]);
 
-db.test.aggregate([
-    {
-        $facet: {
-            //pipeline1:
-            friendsCount: [
-                {
-                    $unwind: "$friends",
-                },
-                {
-                    $group: { _id: "$friends", count: { $sum: 1 } },
-                },
-            ],
-            //pipeline2:
-            educationCount: [
-                {
-                    $unwind: "$education",
-                },
-                {
-                    $group: { _id: "$education", count: { $sum: 1 } },
-                },
-            ],
-            //pipeline3:
-            SkillsCount: [
-                {
-                    $unwind: "$skills",
-                },
-                {
-                    $group: { _id: "$skills", count: { $sum: 1 } },
-                },
-            ],
-        },
-    },
-]);
+// db.test.aggregate([
+//     {
+//         $facet: {
+//             //pipeline1:
+//             friendsCount: [
+//                 {
+//                     $unwind: "$friends",
+//                 },
+//                 {
+//                     $group: { _id: "$friends", count: { $sum: 1 } },
+//                 },
+//             ],
+//             //pipeline2:
+//             educationCount: [
+//                 {
+//                     $unwind: "$education",
+//                 },
+//                 {
+//                     $group: { _id: "$education", count: { $sum: 1 } },
+//                 },
+//             ],
+//             //pipeline3:
+//             SkillsCount: [
+//                 {
+//                     $unwind: "$skills",
+//                 },
+//                 {
+//                     $group: { _id: "$skills", count: { $sum: 1 } },
+//                 },
+//             ],
+//         },
+//     },
+// ]);
+// db = db.getSiblingDB("orders");
+// db = db.getSiblingDB("test");
+
+// db.orders.aggregate([
+//     {
+//         $lookup: {
+//             from: "test",
+//             localField: "userId",
+//             foreignField: "_id",
+//             as: "user",
+//         },
+//     },
+// ]);
+
+// db.test.find({
+//     _id: ObjectId("6406ad63fc13ae5a40000069")
+// }).explain("executionStats");
+
+//indexing
+
+db.test.createIndex({ email: 1 });
