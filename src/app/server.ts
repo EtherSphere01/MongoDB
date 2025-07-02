@@ -8,9 +8,7 @@ const PORT = 5000;
 
 async function main() {
     try {
-        await mongoose.connect(
-            "mongodb+srv://simpleDBUser:IDJddH9xkUpvfv01@cluster0.8o3ok5y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-        );
+        await mongoose.connect(process.env.MONGODB_CONNECTION_STRING || "");
         console.log("Connected to MongoDB");
         server = app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
