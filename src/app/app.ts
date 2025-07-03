@@ -1,18 +1,25 @@
 import express, { Application, Request, Response } from "express";
 import mongoose from "mongoose";
+import { version } from "os";
 const app: Application = express();
 
-const noteSchema = new mongoose.Schema({
-    title: { type: String, required: true, trim: true },
-    content: { type: String, required: true, trim: true, default: "" },
-    createdAt: { type: Date, default: Date.now },
-    category: {
-        type: String,
-        enum: ["work", "personal", "other"],
-        default: "personal",
+const noteSchema = new mongoose.Schema(
+    {
+        title: { type: String, required: true, trim: true },
+        content: { type: String, required: true, trim: true, default: "" },
+        createdAt: { type: Date, default: Date.now },
+        category: {
+            type: String,
+            enum: ["work", "personal", "other"],
+            default: "personal",
+        },
+        pinned: { type: Boolean, default: false },
     },
-    pinned: { type: Boolean, default: false },
-});
+    {
+        timestamps: true,
+        versionKey: false,
+    }
+);
 
 const Note = mongoose.model("Note", noteSchema);
 app.post("/create-note", async (req: Request, res: Response) => {
