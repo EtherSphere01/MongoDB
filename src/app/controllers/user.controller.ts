@@ -1,7 +1,17 @@
 import express, { Request, Response } from "express";
 import { User } from "../models/user.model";
+import z from "zod";
 
 export const userRoutes = express.Router();
+
+const CreateUserZodSchema = z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string().email(),
+    age: z.number(),
+    password: z.string().min(8),
+    role: z.enum(["user", "admin"]).optional(),
+});
 
 userRoutes.get("/", async (req: Request, res: Response) => {
     const user = await User.find();
@@ -26,13 +36,9 @@ userRoutes.post(
         }
 
         try {
-            const newUser = new User({
-                firstName,
-                lastName,
-                email,
-                password,
-                role: role || "user",
-            });
+            const body = await CreateUserZodSchema.parseAsync(req.body);
+
+            const newUser = await User.create(body);
 
             await newUser.save();
             res.status(201).json({
